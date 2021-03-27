@@ -14,6 +14,7 @@ function startApp(name) {
   process.stdin.on("data", onDataReceived);
   console.log(`Welcome to ${name}'s application!`);
   console.log("--------------------");
+  console.log("type help to know the commands");
 }
 
 /**
