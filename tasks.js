@@ -72,4 +72,4 @@ function quit() {
 }
 
 // The following line starts the application
-startApp("Jad Sarout");
+startApp("Abdallah badra");
