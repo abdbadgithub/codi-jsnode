@@ -32,7 +32,9 @@ function startApp(name) {
  * @param  {string} text data typed by the user
  * @returns {void}
  */
+var arraydata = [1, 2, 3];
 function onDataReceived(text) {
+  let input = text.trim().replace("\n", "").split(" ");
   if (text === "quit\n" || text === "exit\n") {
     quit();
   } else if (
@@ -42,6 +44,16 @@ function onDataReceived(text) {
     hello(text);
   } else if (text === "help\n") {
     help();
+  } else if (text === "add\n") {
+    console.log("error please insert a value");
+  } else if (input[0] === "add" && input[1] != null) {
+    add(input[1], arraydata);
+  } else if (text === "remove\n") {
+    arraydata.pop();
+  } else if (input[0] === "remove" && input[1] != null) {
+    remove(arraydata, input[1]);
+  } else if (text === "list\n") {
+    console.log(arraydata);
   } else {
     unknownCommand(text);
   }
@@ -66,7 +78,14 @@ function unknownCommand(c) {
 function hello(text) {
   console.log(text.replace("\n", "") + "!");
 }
-
+function add(element, arraydata) {
+  arraydata.push(element);
+  console.log(element + " is added");
+  console.log(arraydata);
+}
+function display(tasks) {
+  console.log(tasks);
+}
 /**
  * Exits the application
  *
@@ -77,7 +96,13 @@ function quit() {
   process.exit();
 }
 function help() {
-  console.log("the commands are \nhello \nexit \nquit");
+  console.log("the commands are \nhello \nexit \nquit\nlist\nadd\nremove");
 }
+function remove(arraydata, input) {
+  if (input < arraydata.length) {
+    arraydata.splice(input - 1, 1);
+  }
+}
+
 // The following line starts the application
 startApp("Abdallah badra");
