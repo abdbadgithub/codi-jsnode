@@ -44,16 +44,6 @@ var object = [
     done: true,
   },
 ];
-fs.readFile("user.json", "utf-8", (err, data) => {
-  if (err) {
-    throw err;
-  }
-
-  // parse JSON object
-  object = JSON.parse(data.toString());
-
-  // print JSON object
-});
 
 function onDataReceived(text) {
   let input = text.trim().replace("\n", "").split(" ");
@@ -98,15 +88,23 @@ function onDataReceived(text) {
   } else if (input[0] === "uncheck" && input[1] != null) {
     uncheck(object, input[1]);
     displayobject(object);
+  } else if (
+    input[0] === "node" &&
+    input[1] === "tasks.js" &&
+    input[2] === null
+  ) {
+    save();
+    load();
+  } else if (
+    input[0] === "node" &&
+    input[1] === "tasks.js" &&
+    input[2] != null
+  ) {
+    savewithfilename(input[2]);
+    loadwithfilename(input[2]);
+    console.log("filename");
   } else {
     unknownCommand(text);
-  }
-  var jsondata = JSON.stringify(object);
-  try {
-    fs.writeFileSync("user.json", jsondata);
-    console.log("JSON data is saved.");
-  } catch (error) {
-    console.error(err);
   }
 }
 
@@ -172,5 +170,48 @@ function displayobject(object) {
     }
   }
 }
+function save() {
+  var jsondata = JSON.stringify(object);
+  try {
+    fs.writeFileSync("database.json", jsondata);
+    console.log("JSON data is saved.");
+  } catch (error) {
+    console.error(err);
+  }
+}
+function load() {
+  fs.readFile("database.json", "utf-8", (err, data) => {
+    if (err) {
+      throw err;
+    }
+
+    // parse JSON object
+    object = JSON.parse(data.toString());
+
+    // print JSON object
+  });
+}
+function savewithfilename(input) {
+  var jsondata = JSON.stringify(object);
+  try {
+    fs.writeFileSync(input, jsondata);
+    console.log("JSON data is saved.");
+  } catch (error) {
+    console.error(err);
+  }
+}
+function loadwithfilename(input) {
+  fs.readFile(input, "utf-8", (err, data) => {
+    if (err) {
+      throw err;
+    }
+
+    // parse JSON object
+    object = JSON.parse(data.toString());
+
+    // print JSON object
+  });
+}
+
 // The following line starts the application
 startApp("Abdallah badra");
