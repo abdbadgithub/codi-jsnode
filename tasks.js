@@ -32,7 +32,8 @@ function startApp(name) {
  * @param  {string} text data typed by the user
  * @returns {void}
  */
-var arraydata = [1, 2, 3];
+//var arraydata = [1, 2, 3];
+const fs = require("fs");
 var object = [
   {
     name: 1,
@@ -43,8 +44,20 @@ var object = [
     done: true,
   },
 ];
+fs.readFile("user.json", "utf-8", (err, data) => {
+  if (err) {
+    throw err;
+  }
+
+  // parse JSON object
+  object = JSON.parse(data.toString());
+
+  // print JSON object
+});
+
 function onDataReceived(text) {
   let input = text.trim().replace("\n", "").split(" ");
+
   if (text === "quit\n" || text === "exit\n") {
     quit();
   } else if (
@@ -57,26 +70,43 @@ function onDataReceived(text) {
   } else if (text === "add\n") {
     console.log("error please insert a value");
   } else if (input[0] === "add" && input[1] != null) {
-    add(input[1], arraydata);
-    console.log(arraydata);
+    add(input[1], object);
+    displayobject(object);
   } else if (text === "remove\n") {
-    arraydata.pop();
-    console.log(arraydata);
+    object.pop();
+    displayobject(object);
   } else if (input[0] === "remove" && input[1] != null) {
-    remove(arraydata, input[1]);
-    console.log(arraydata);
+    remove(object, input[1]);
+    displayobject(object);
   } else if (text === "edit\n") {
     console.log("please insert a value to edit");
   } else if (input[0] === "edit" && input[1] != null && input[2] == null) {
-    edit(arraydata, input[1]);
-    console.log(arraydata);
+    edit(object, input[1]);
+    displayobject(object);
   } else if (input[0] === "edit" && input[1] != null && input[2] != null) {
-    editwithnumber(arraydata, input[1], input[2]);
-    console.log(arraydata);
+    editwithnumber(object, input[1], input[2]);
+    displayobject(object);
   } else if (text === "list\n") {
-    console.log(arraydata);
+    displayobject(object);
+  } else if (text === "check\n") {
+    console.log("error please enter a number to check");
+  } else if (input[0] === "check" && input[1] != null) {
+    check(object, input[1]);
+    displayobject(object);
+  } else if (text === "uncheck\n") {
+    console.log("error please enter a number to check");
+  } else if (input[0] === "uncheck" && input[1] != null) {
+    uncheck(object, input[1]);
+    displayobject(object);
   } else {
     unknownCommand(text);
+  }
+  var jsondata = JSON.stringify(object);
+  try {
+    fs.writeFileSync("user.json", jsondata);
+    console.log("JSON data is saved.");
+  } catch (error) {
+    console.error(err);
   }
 }
 
@@ -100,11 +130,11 @@ function hello(text) {
   console.log(text.replace("\n", "") + "!");
 }
 function add(element, arraydata) {
-  arraydata.push(element);
+  arraydata.push({ name: element, done: false });
+  //arraydata.name.push(element);
+  //arraydata.done.push(false);
 }
-function display(tasks) {
-  console.log(tasks);
-}
+
 /**
  * Exits the application
  *
@@ -118,16 +148,29 @@ function help() {
   console.log("the commands are \nhello \nexit \nquit\nlist\nadd\nremove");
 }
 function remove(arraydata, input) {
-  if (input < arraydata.length) {
-    arraydata.splice(input - 1, 1);
-  }
+  arraydata.splice(input - 1, 1);
 }
 function edit(arraydata, input) {
   arraydata.pop();
-  arraydata.push(input);
+  arraydata.push({ name: input, done: false });
 }
 function editwithnumber(arraydata, index, input) {
-  arraydata.splice(index - 1, 1, input);
+  arraydata.splice(index - 1, 1, { name: input, done: false });
+}
+function check(object, input) {
+  object[input - 1].done = true;
+}
+function uncheck(object, input) {
+  object[input - 1].done = false;
+}
+function displayobject(object) {
+  for (let i = 0; i < object.length; i++) {
+    if (object[i].done === true) {
+      console.log("[✓] " + object[i].name);
+    } else {
+      console.log("[ ] " + object[i].name);
+    }
+  }
 }
 // The following line starts the application
 startApp("Abdallah badra");
